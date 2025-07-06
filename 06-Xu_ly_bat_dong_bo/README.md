@@ -15,7 +15,7 @@ Promise (Lời hứa) được giới thiệu trong ES6 để giải quyết v�
 Một Promise có 3 trạng thái:
 
 pending: Trạng thái ban đầu, chưa hoàn thành hay thất bại.
-fulfilled (hoặc resolved): Tác vụ đã hoàn thành thành công.
+resolved (hoặc fulfilled): Tác vụ đã hoàn thành thành công.
 rejected: Tác vụ đã thất bại.
 Cấu trúc và cách sử dụng:
 
