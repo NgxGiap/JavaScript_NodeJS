@@ -4,7 +4,7 @@
 
 Trong JavaScript, các kiểu dữ liệu được chia thành hai nhóm chính: **Kiểu dữ liệu nguyên thủy (Primitive Types)** và **Kiểu dữ liệu tham chiếu (Reference Types)**. Sự khác biệt cốt lõi giữa chúng nằm ở cách chúng được lưu trữ và sao chép trong bộ nhớ.
 
-### I. Kiểu dữ liệu nguyên thủy (Primitive Types)
+#### I. Kiểu dữ liệu nguyên thủy (Primitive Types)
 
 Đây là những dữ liệu cơ bản, **bất biến (immutable)** - không thể thay đổi trực tiếp giá trị gốc. Khi bạn gán một biến nguyên thủy cho một biến khác, bạn đang sao chép giá trị của nó.
 
@@ -24,7 +24,7 @@ Có 7 kiểu dữ liệu nguyên thủy:
 
 - `bigint`: (ES2020) Dùng cho các số nguyên cực lớn, vượt ngoài giới hạn của number.
 
-### II. Kiểu dữ liệu tham chiếu (Reference Types)
+#### II. Kiểu dữ liệu tham chiếu (Reference Types)
 
 Tất cả các `object` trong JavaScript đều là kiểu tham chiếu. Điều này bao gồm:
 
