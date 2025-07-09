@@ -1,35 +1,39 @@
-// Sử dụng Function Expression (hàm thông thường)
-const person = {
-    name: 'John',
-    age: 30,
-    sayHello: function() {
-        console.log(`Hello, my name is ${this.name}.`); // 'this' ở đây là đối tượng 'person'
+// Ví dụ về 'this' trong hàm thông thường và Arrow Function
 
+// Hàm thông thường: 'this' phụ thuộc vào cách hàm được gọi
+const traditionalFunc = {
+    name: "Traditional",
+    sayHello: function() {
+        console.log(`Hello, I am ${this.name}`); // 'this' ở đây là traditionalFunc
         setTimeout(function() {
-            // Bên trong hàm callback của setTimeout, 'this' không còn là 'person' nữa.
-            // Trong non-strict mode, nó là đối tượng global (window trong trình duyệt).
-            // Trong strict mode, nó là 'undefined'.
-            console.log(`I am ${this.age} years old.`); // Sẽ in ra "I am undefined years old." (lỗi)
-        }, 1000);
+            console.log(`Inside setTimeout (Traditional): Hello, I am ${this.name}`); // 'this' ở đây là window/global object (trong non-strict mode) hoặc undefined (trong strict mode)
+        }, 100);
     }
 };
-person.sayHello();
+traditionalFunc.sayHello(); // Output: Hello, I am Traditional; Inside setTimeout (Traditional): Hello, I am undefined/window
 
-console.log("============================");
-
-// Sử dụng Arrow Function để giải quyết vấn đề
-const personWithArrow = {
-    name: 'Jane',
-    age: 25,
+// Arrow Function: 'this' kế thừa từ ngữ cảnh bao bọc (lexical this)
+const arrowFunc = {
+    name: "Arrow",
     sayHello: function() {
-        console.log(`Hello, my name is ${this.name}.`); // 'this' ở đây là 'personWithArrow'
-
-        // Sử dụng Arrow Function
+        console.log(`Hello, I am ${this.name}`); // 'this' ở đây là arrowFunc
         setTimeout(() => {
-            // Arrow function không có 'this' của riêng nó, nó "mượn" 'this' từ ngữ cảnh bên ngoài.
-            // Ngữ cảnh bên ngoài là hàm sayHello, nơi 'this' chính là 'personWithArrow'.
-            console.log(`I am ${this.age} years old.`); // Sẽ in ra "I am 25 years old." (đúng)
-        }, 1000);
+            console.log(`Inside setTimeout (Arrow): Hello, I am ${this.name}`); // 'this' ở đây vẫn là arrowFunc (kế thừa từ ngữ cảnh bên ngoài)
+        }, 100);
     }
 };
-personWithArrow.sayHello();
+arrowFunc.sayHello(); // Output: Hello, I am Arrow; Inside setTimeout (Arrow): Hello, I am Arrow
+
+// Arrow Function không có đối tượng arguments
+const sum = (...args) => { // Sử dụng rest parameters thay vì arguments
+    console.log(args); // Output: [1, 2, 3]
+    return args.reduce((acc, val) => acc + val, 0);
+};
+console.log(sum(1, 2, 3)); // Output: 6
+
+// Hàm thông thường có đối tượng arguments
+function sumTraditional() {
+    console.log(arguments); // Output: [Arguments] { '0': 4, '1': 5, '2': 6 }
+    return Array.from(arguments).reduce((acc, val) => acc + val, 0);
+}
+console.log(sumTraditional(4, 5, 6)); // Output: 15

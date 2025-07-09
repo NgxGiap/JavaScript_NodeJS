@@ -1,18 +1,24 @@
-// Bạn có thể gọi hàm ở đây dù nó được định nghĩa ở dưới
-console.log(add(5, 3)); // Kết quả: 8
-
-// Định nghĩa hàm
-function add(a, b) {
-    return a + b;
+// Ví dụ Function Declaration
+greetDeclaration("Alice"); // Có thể gọi trước khi định nghĩa (hoisting)
+function greetDeclaration(name) {
+    console.log(`Hello from Declaration, ${name}!`);
 }
+greetDeclaration("Bob");
 
-console.log("============================");
-
-// multiply(4, 5); // Gây ra lỗi: ReferenceError (nếu dùng let/const) hoặc TypeError (nếu dùng var)
-
-const multiply = function(a, b) {
-    return a * b;
+// Ví dụ Function Expression
+const greetExpression = function(name) {
+    console.log(`Hello from Expression, ${name}!`);
 };
+greetExpression("Charlie");
 
-// Phải gọi sau khi đã định nghĩa
-console.log(multiply(4, 5)); // Kết quả: 20
+// greetExpressionBefore("David"); // Lỗi: Cannot access 'greetExpressionBefore' before initialization
+// const greetExpressionBefore = function(name) {
+//     console.log(`Hello from Expression Before, ${name}!`);
+// };
+
+// Nếu dùng var, biến được hoisted nhưng giá trị là undefined
+// var greetVarExpression;
+// greetVarExpression("Eve"); // Lỗi: TypeError: greetVarExpression is not a function
+// greetVarExpression = function(name) {
+//     console.log(`Hello from Var Expression, ${name}!`);
+// };

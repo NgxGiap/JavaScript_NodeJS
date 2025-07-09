@@ -1,71 +1,50 @@
+const numbers = [1, 2, 3, 4, 5];
 const fruits = ['apple', 'banana', 'cherry'];
 
-fruits.forEach((fruit, index) => {
-    console.log(`Vị trí ${index}: ${fruit}`);
+// I. forEach()
+console.log("--- forEach() ---");
+numbers.forEach((num, index) => {
+    console.log(`Element at index ${index}: ${num}`);
 });
 // Output:
-// Vị trí 0: apple
-// Vị trí 1: banana
-// Vị trí 2: cherry
+// Element at index 0: 1
+// Element at index 1: 2
+// Element at index 2: 3
+// Element at index 3: 4
+// Element at index 4: 5
 
-console.log("============================");
-
-const numbers = [1, 2, 3, 4, 5];
-
+// II. map()
+console.log("\n--- map() ---");
 const squaredNumbers = numbers.map(num => num * num);
+console.log(squaredNumbers); // Output: [1, 4, 9, 16, 25]
 
-console.log(squaredNumbers); // [1, 4, 9, 16, 25]
-console.log(numbers);        // [1, 2, 3, 4, 5] (mảng gốc không đổi)
+const uppercasedFruits = fruits.map(fruit => fruit.toUpperCase());
+console.log(uppercasedFruits); // Output: ['APPLE', 'BANANA', 'CHERRY']
 
-console.log("============================");
+// III. filter()
+console.log("\n--- filter() ---");
+const evenNumbers = numbers.filter(num => num % 2 === 0);
+console.log(evenNumbers); // Output: [2, 4]
 
-const numbers2 = [1, 2, 3, 4, 5, 6, 7, 8];
+const longFruits = fruits.filter(fruit => fruit.length > 5);
+console.log(longFruits); // Output: ['banana', 'cherry']
 
-const evenNumbers = numbers2.filter(num => num % 2 === 0);
+// IV. reduce()
+console.log("\n--- reduce() ---");
+// Tính tổng các số
+const sumOfNumbers = numbers.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+}, 0); // initialValue là 0
+console.log(sumOfNumbers); // Output: 15 (1+2+3+4+5)
 
-console.log(evenNumbers); // [2, 4, 6, 8]
-console.log(numbers2);     // Mảng gốc không đổi
+// Nối các chuỗi thành một
+const combinedFruits = fruits.reduce((acc, fruit) => acc + ' ' + fruit);
+console.log(combinedFruits); // Output: "apple banana cherry" (initialValue mặc định là 'apple')
 
-console.log("============================");
-
-const numbers3 = [1, 2, 3, 4, 5];
-
-// 0 là giá trị khởi tạo (initialValue) cho 'sum'
-const total = numbers3.reduce((sum, currentNumber) => {
-    return sum + currentNumber;
-}, 0);
-
-console.log(total); // 15
-
-console.log("============================");
-
-const products = [
-    { name: 'Laptop', category: 'Electronics' },
-    { name: 'T-shirt', category: 'Apparel' },
-    { name: 'Mouse', category: 'Electronics' },
-    { name: 'Jeans', category: 'Apparel' }
-];
-
-const groupedProducts = products.reduce((acc, product) => {
-    const category = product.category;
-    if (!acc[category]) {
-        acc[category] = []; // Nếu chưa có key này, tạo một mảng rỗng
-    }
-    acc[category].push(product); // Thêm sản phẩm vào đúng danh mục
-    return acc;
-}, {}); // Giá trị khởi tạo là một object rỗng {}
-
-console.log(groupedProducts);
-/*
-Output:
-{
-  Electronics: [
-    { name: 'Laptop', category: 'Electronics' },
-    { name: 'Mouse', category: 'Electronics' }
-  ],
-  Apparel: [
-    { name: 'T-shirt', category: 'Apparel' },
-    { name: 'Jeans', category: 'Apparel' }
-  ]
-}
-*/
+// Chuyển mảng thành object (ví dụ: đếm số lần xuất hiện của mỗi phần tử)
+const votes = ['yes', 'no', 'yes', 'yes', 'no'];
+const voteCounts = votes.reduce((counts, vote) => {
+    counts[vote] = (counts[vote] || 0) + 1;
+    return counts;
+}, {}); // initialValue là một object rỗng
+console.log(voteCounts); // Output: { yes: 3, no: 2 }
