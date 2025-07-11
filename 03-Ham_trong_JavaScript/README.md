@@ -93,7 +93,7 @@ greetExpression("Charlie");
 
 - Không có từ khóa `function`.
 
-= Không có binding (ràng buộc) `this` của riêng nó. Nó sẽ kế thừa this từ context (ngữ cảnh) bao bọc nó **(lexical this)**. Đây là điểm khác biệt lớn nhất và quan trọng nhất.
+- Không có binding (ràng buộc) `this` của riêng nó. Nó sẽ kế thừa this từ context (ngữ cảnh) bao bọc nó **(lexical this)**. Đây là điểm khác biệt lớn nhất và quan trọng nhất.
 
 - Không có đối tượng `arguments` như hàm thông thường (thay vào đó, sử dụng rest parameters `...args`).
 
