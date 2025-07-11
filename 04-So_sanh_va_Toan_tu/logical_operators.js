@@ -1,83 +1,94 @@
-// Kiểm tra điều kiện
-const age = 25;
-const hasLicense = true;
-if (age >= 18 && hasLicense) {
-    console.log("Được phép lái xe."); // In ra
-}
+// Ví dụ về && (Logic AND)
+console.log("--- && (Logic AND) ---");
+console.log(true && true);   // true
+console.log(true && false);  // false
+console.log(false && true);  // false
+console.log(false && false); // false
 
-// Trả về giá trị
-console.log('Hello' && 'World');   // 'World' (vì 'Hello' là truthy, nó đi tiếp và trả về vế phải)
-console.log(0 && 'World');         // 0 (vì 0 là falsy, nó dừng lại và trả về 0)
-console.log(null && 'World');      // null (vì null là falsy)
+// Short-circuiting với &&
+const user = { name: "John", age: 25 };
+const admin = null;
 
-// Thực thi có điều kiện
-const userIsLoggedIn = true;
-userIsLoggedIn && console.log('Chào mừng quay trở lại!'); // In ra
+// Kiểm tra user có tồn tại và có tên không
+user && user.name && console.log(`User name: ${user.name}`); // Output: User name: John
+admin && admin.name && console.log(`Admin name: ${admin.name}`); // Không output gì (admin là falsy)
 
-console.log("2============================");
+// Ví dụ về || (Logic OR)
+console.log("\n--- || (Logic OR) ---");
+console.log(true || true);   // true
+console.log(true || false);  // true
+console.log(false || true);  // true
+console.log(false || false); // false
 
-// Kiểm tra điều kiện
-const hasCreditCard = false;
-const hasCash = true;
-if (hasCreditCard || hasCash) {
-    console.log("Có thể thanh toán."); // In ra
-}
+// Short-circuiting với || (cung cấp giá trị mặc định)
+const name1 = "Alice";
+const name2 = "";
+const name3 = null;
 
-// Trả về giá trị / Cung cấp giá trị mặc định
-const username = null;
-const displayName = username || 'Guest';
-console.log(displayName); // 'Guest' (vì username là null (falsy), nó đi tiếp và trả về 'Guest')
+const displayName1 = name1 || "Guest";
+console.log(displayName1); // Output: Alice
 
-const currentUser = 'Alice';
-const displayUser = currentUser || 'Guest';
-console.log(displayUser); // 'Alice' (vì 'Alice' là truthy, nó dừng và trả về 'Alice')
+const displayName2 = name2 || "Guest";
+console.log(displayName2); // Output: Guest (vì "" là falsy)
 
-console.log("3============================");
+const displayName3 = name3 || "Guest";
+console.log(displayName3); // Output: Guest (vì null là falsy)
 
-const isOpen = false;
-if (!isOpen) {
-    console.log("Cửa hàng đã đóng cửa."); // In ra
-}
+// Ví dụ về ! (Logic NOT)
+console.log("\n--- ! (Logic NOT) ---");
+console.log(!true);  // false
+console.log(!false); // true
+console.log(!0);     // true (0 là falsy)
+console.log(!"");    // true ("" là falsy)
+console.log(!null);  // true (null là falsy)
+console.log(!undefined); // true (undefined là falsy)
+console.log(!"hello"); // false ("hello" là truthy)
 
-console.log(!true);   // false
-console.log(!0);      // true (vì 0 là falsy)
-console.log(!"Hello"); // false (vì "Hello" là truthy)
-
-// Sử dụng !! để ép kiểu
+// Ví dụ về !! (Double NOT)
+console.log("\n--- !! (Double NOT) ---");
+console.log(!!0);       // false
 console.log(!!"");      // false
-console.log(!!10);     // true
-console.log(!!null);   // false
+console.log(!!null);    // false
+console.log(!!undefined); // false
+console.log(!!false);   // false
+console.log(!!1);       // true
+console.log(!!"hello"); // true
+console.log(!!{});      // true
+console.log(!![]);      // true
 
-console.log("4============================");
+// Ví dụ về ?? (Nullish Coalescing Operator)
+console.log("\n--- ?? (Nullish Coalescing Operator) ---");
+const value1 = 0;
+const value2 = "";
+const value3 = false;
+const value4 = null;
+const value5 = undefined;
+const value6 = "hello";
 
-// Trường hợp với `null` hoặc `undefined`
-const val1 = null ?? 'Default';    // 'Default'
-const val2 = null || 'Default';    // 'Default' (kết quả giống nhau)
+const result1 = value1 ?? "default"; // value1 không phải null/undefined
+console.log(result1); // Output: 0
 
-// Trường hợp với 0
-const quantity1 = 0 ?? 10; // 0 (vì 0 không phải null/undefined, nó lấy giá trị 0)
-const quantity2 = 0 || 10; // 10 (vì 0 là falsy, nó bỏ qua và lấy 10)
+const result2 = value2 ?? "default"; // value2 không phải null/undefined
+console.log(result2); // Output: ""
 
-// Trường hợp với chuỗi rỗng
-const text1 = '' ?? 'Default text'; // ''
-const text2 = '' || 'Default text'; // 'Default text'
+const result3 = value3 ?? "default"; // value3 không phải null/undefined
+console.log(result3); // Output: false
 
-// => Sử dụng `??` khi bạn muốn cung cấp giá trị mặc định chỉ cho `null` và `undefined`.
+const result4 = value4 ?? "default"; // value4 là null
+console.log(result4); // Output: default
 
-console.log("5============================");
+const result5 = value5 ?? "default"; // value5 là undefined
+console.log(result5); // Output: default
 
-const userAge = 20;
+const result6 = value6 ?? "default"; // value6 không phải null/undefined
+console.log(result6); // Output: hello
 
-// Dùng if...else
-let message;
-if (userAge >= 18) {
-    message = "Người lớn";
-} else {
-    message = "Trẻ em";
-}
+// Ví dụ về ?: (Ternary Operator)
+console.log("\n--- ?: (Ternary Operator) ---");
+const age = 18;
+const canVote = (age >= 18) ? "Yes, can vote" : "No, cannot vote";
+console.log(canVote); // Output: Yes, can vote
 
-// Dùng toán tử ba ngôi (ngắn gọn hơn)
-const messageTernary = userAge >= 18 ? "Người lớn" : "Trẻ em";
-
-console.log(message);         // "Người lớn"
-console.log(messageTernary);  // "Người lớn"
+const temperature = 25;
+const weather = (temperature > 30) ? "Hot" : (temperature > 20) ? "Warm" : "Cold";
+console.log(weather); // Output: Warm

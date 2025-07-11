@@ -1,21 +1,32 @@
-console.log(5 === 5);         // true (cùng giá trị, cùng kiểu number)
-console.log('5' === 5);       // false (khác kiểu dữ liệu: string vs number)
-console.log(true === 1);      // false (khác kiểu dữ liệu: boolean vs number)
-console.log(null === undefined); // false (chúng là hai kiểu nguyên thủy khác nhau)
-console.log(0 === -0);        // true
+// Ví dụ về === (Strict Equality)
+console.log("--- === (Strict Equality) ---");
+console.log(5 === 5);         // true (giá trị và kiểu đều giống nhau)
+console.log(5 === "5");       // false (kiểu khác nhau: number vs string)
+console.log(true === 1);      // false (kiểu khác nhau: boolean vs number)
+console.log(null === undefined); // false (kiểu khác nhau)
+console.log(0 === false);     // false (kiểu khác nhau)
+console.log([] === []);       // false (hai mảng khác nhau trong bộ nhớ, dù nội dung giống)
+console.log({} === {});       // false (hai đối tượng khác nhau trong bộ nhớ)
 
-const obj1 = { a: 1 };
-const obj2 = { a: 1 };
-console.log(obj1 === obj2);   // false (vì chúng là hai đối tượng khác nhau trong bộ nhớ, dù có cùng nội dung)
+let a = [1];
+let b = a;
+console.log(a === b);         // true (cùng tham chiếu đến một đối tượng)
 
-const obj3 = obj1;
-console.log(obj1 === obj3);   // true (vì chúng cùng tham chiếu đến một đối tượng)
+// Ví dụ về == (Loose Equality)
+console.log("\n--- == (Loose Equality) ---");
+console.log(5 == 5);          // true
+console.log(5 == "5");        // true (JavaScript chuyển đổi "5" thành 5)
+console.log(true == 1);       // true (JavaScript chuyển đổi true thành 1)
+console.log(false == 0);      // true (JavaScript chuyển đổi false thành 0)
+console.log(null == undefined); // true (trường hợp đặc biệt)
+console.log("" == 0);         // true (JavaScript chuyển đổi "" thành 0)
+console.log("" == false);     // true (JavaScript chuyển đổi "" thành false)
+console.log([] == 0);         // true (mảng rỗng chuyển thành chuỗi rỗng rồi thành 0)
+console.log([] == false);     // true (mảng rỗng chuyển thành chuỗi rỗng rồi thành false)
+console.log([1] == "1");      // true (mảng [1] chuyển thành chuỗi "1")
 
-console.log("============================");
-
-console.log(5 == 5);         // true
-console.log('5' == 5);       // true (chuỗi '5' được chuyển thành số 5 trước khi so sánh)
-console.log(true == 1);      // true (boolean true được chuyển thành số 1)
-console.log(false == 0);     // true (boolean false được chuyển thành số 0)
-console.log('' == 0);        // true (chuỗi rỗng được chuyển thành số 0)
-console.log(null == undefined); // true (đây là một trường hợp đặc biệt được định nghĩa trong spec)
+// Các trường hợp cần cẩn trọng với ==
+console.log("\n--- Cẩn trọng với == ---");
+console.log(null == 0);       // false
+console.log(undefined == 0);  // false
+console.log(NaN == NaN);      // false (NaN không bằng chính nó)
