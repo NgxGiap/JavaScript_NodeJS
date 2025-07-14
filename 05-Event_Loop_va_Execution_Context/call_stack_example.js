@@ -1,32 +1,38 @@
-function third() {
-    console.log("Ba");
+function first() {
+    console.log('Inside first function');
+    second();
+    console.log('Exiting first function');
 }
 
 function second() {
-    console.log("Hai");
-    third(); // Gọi hàm third
-    console.log("Kết thúc hai");
+    console.log('Inside second function');
+    third();
+    console.log('Exiting second function');
 }
 
-function first() {
-    console.log("Một");
-    second(); // Gọi hàm second
-    console.log("Kết thúc một");
+function third() {
+    console.log('Inside third function');
+    // Khi third() kết thúc, nó được pop khỏi Call Stack
 }
 
-first(); // Bắt đầu
+console.log('Global context starts');
+first(); // Gọi hàm first, đẩy FEC của first vào Call Stack
+console.log('Global context ends');
 
-// Diễn biến trên Call Stack:
-
-// first() được gọi -> first FEC được đẩy vào stack. ([GEC, first])
-// In ra "Một".
-// second() được gọi từ first() -> second FEC được đẩy vào stack. ([GEC, first, second])
-// In ra "Hai".
-// third() được gọi từ second() -> third FEC được đẩy vào stack. ([GEC, first, second, third])
-// In ra "Ba".
-// third() kết thúc -> third FEC được pop ra. ([GEC, first, second])
-// second() tiếp tục -> In ra "Kết thúc hai".
-// second() kết thúc -> second FEC được pop ra. ([GEC, first])
-// first() tiếp tục -> In ra "Kết thúc một".
-// first() kết thúc -> first FEC được pop ra. ([GEC])
-// Chương trình kết thúc.
+/*
+Thứ tự thực thi và Call Stack:
+1. Global context starts (console.log)
+2. first() được gọi, FEC của first được đẩy vào Stack
+   - Console: 'Inside first function'
+3. second() được gọi bên trong first(), FEC của second được đẩy vào Stack
+   - Console: 'Inside second function'
+4. third() được gọi bên trong second(), FEC của third được đẩy vào Stack
+   - Console: 'Inside third function'
+5. third() kết thúc, FEC của third được POP
+6. Console: 'Exiting second function'
+7. second() kết thúc, FEC của second được POP
+8. Console: 'Exiting first function'
+9. first() kết thúc, FEC của first được POP
+10. Console: 'Global context ends'
+11. Global context kết thúc, GEC được POP. Stack rỗng.
+*/

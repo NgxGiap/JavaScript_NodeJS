@@ -1,14 +1,28 @@
-console.log('Bắt đầu'); // 1
+console.log('Start script');
 
 setTimeout(() => {
-    console.log('Bên trong setTimeout'); // 3
-}, 0);
+    console.log('Timeout callback executed (from Callback Queue)');
+}, 0); // Đặt thời gian là 0ms, nhưng vẫn là tác vụ bất đồng bộ
 
-console.log('Kết thúc'); // 2
+Promise.resolve().then(() => {
+    console.log('Promise resolved (from Microtask Queue)');
+});
 
-// console.log('Bắt đầu') được đẩy vào Call Stack và thực thi ngay lập tức.
-// setTimeout được đẩy vào Call Stack. Nó được chuyển cho Web API xử lý timer (dù là 0ms) và bị pop ra khỏi Call Stack. Hàm callback () => {...} chưa được chạy.
-// console.log('Kết thúc') được đẩy vào Call Stack và thực thi ngay.
-// Lúc này Call Stack đã rỗng. Web API ngay lập tức (vì delay là 0ms) đẩy hàm callback vào Callback Queue.
-// Event Loop thấy Call Stack rỗng, nó bốc callback từ Queue vào Stack.
-// Callback được thực thi, in ra 'Bên trong setTimeout'.
+console.log('End script (synchronous code)');
+
+/*
+Thứ tự output:
+1. "Start script" (đồng bộ)
+2. "End script (synchronous code)" (đồng bộ)
+3. "Promise resolved (from Microtask Queue)" (Microtask có ưu tiên cao hơn Macrotask)
+4. "Timeout callback executed (from Callback Queue)" (Macrotask)
+
+Giải thích:
+- `console.log('Start script')` và `console.log('End script (synchronous code)')` là code đồng bộ, được thực thi ngay lập tức.
+- `setTimeout` được gửi đến Web APIs. Sau 0ms, callback của nó được đẩy vào Macrotask Queue.
+- `Promise.resolve().then()` được gửi đến Microtask Queue.
+- Sau khi tất cả code đồng bộ trong Global Execution Context hoàn thành, Event Loop kiểm tra.
+- Nó thấy Microtask Queue có tác vụ (`Promise.then()`), nên nó ưu tiên đẩy tác vụ này vào Call Stack.
+- Sau khi Microtask Queue rỗng, Event Loop kiểm tra Macrotask Queue.
+- Nó thấy tác vụ `setTimeout` và đẩy vào Call Stack để thực thi.
+*/
