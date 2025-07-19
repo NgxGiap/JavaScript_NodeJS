@@ -1,26 +1,46 @@
-const fs = require('fs').promises; // Node.js cung cấp sẵn phiên bản Promise của module fs
+// Hàm mô phỏng tải dữ liệu bằng Promise (tái sử dụng từ ví dụ trên)
+function fetchDataAsync() {
+    return new Promise((resolve, reject) => {
+        console.log("Đang tải dữ liệu (Async/Await)...");
+        const success = true;
 
-async function readMultipleFiles() {
+        setTimeout(() => {
+            if (success) {
+                resolve("Dữ liệu đã được tải xong (Async/Await)!");
+            } else {
+                reject("Lỗi khi tải dữ liệu (Async/Await)!");
+            }
+        }, 2000);
+    });
+}
+
+// Hàm async sử dụng await
+async function processAsyncData() {
     try {
-        console.log('Bắt đầu...');
+        const data = await fetchDataAsync(); // Tạm dừng cho đến khi Promise được giải quyết
+        console.log("Xử lý dữ liệu thành công (Async/Await):", data);
 
-        // Dùng await để chờ Promise từ fs.readFile hoàn thành
-        const data1 = await fs.readFile('file1.txt', 'utf8');
-        console.log('Đã đọc xong file 1.');
+        const moreData = await new Promise(resolve => {
+            setTimeout(() => resolve("Dữ liệu bổ sung đã sẵn sàng!"), 1000);
+        });
+        console.log("Dữ liệu bổ sung:", moreData);
 
-        // Dùng await để chờ Promise tiếp theo
-        const data2 = await fs.readFile(data1.trim() + '.txt', 'utf8');
-        console.log('Đã đọc xong file 2.');
-
-        console.log('Nội dung file 2 là:', data2);
-
+        return "Tất cả các tác vụ bất đồng bộ đã hoàn thành!";
     } catch (error) {
-        // Bất kỳ lỗi nào từ các câu lệnh await ở trên sẽ được bắt ở đây
-        console.error('Đã xảy ra lỗi:', error);
+        console.error("Đã xảy ra lỗi trong quá trình bất đồng bộ:", error);
+        throw error; // Ném lại lỗi để có thể bắt ở bên ngoài
     } finally {
-        console.log('Kết thúc hàm readMultipleFiles.');
+        console.log("Tác vụ processAsyncData đã kết thúc.");
     }
 }
 
 // Gọi hàm async
-readMultipleFiles();
+processAsyncData()
+    .then(finalResult => {
+        console.log("Kết quả cuối cùng từ hàm async:", finalResult);
+    })
+    .catch(err => {
+        console.error("Lỗi bên ngoài hàm async:", err);
+    });
+
+console.log("Tiếp tục thực thi các tác vụ khác (Async/Await)...");
