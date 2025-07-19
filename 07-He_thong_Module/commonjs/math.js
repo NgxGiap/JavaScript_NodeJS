@@ -1,16 +1,11 @@
-// Cách 1: Xuất một đối tượng chứa nhiều hàm (phổ biến nhất)
-const add = (a, b) => a + b;
-const subtract = (a, b) => a - b;
+// math.js (CommonJS module)
 
-module.exports = {
-    add,
-    subtract
-};
+// Cách 1: Thêm thuộc tính vào exports
+exports.add = (a, b) => a + b;
+exports.subtract = (a, b) => a - b;
 
-// Cách 2: Thêm thuộc tính vào exports (hoạt động tương tự Cách 1)
-// exports.add = (a, b) => a + b;
-// exports.subtract = (a, b) => a - b;
-
-// Cách 3: Xuất một giá trị duy nhất (ví dụ một hàm hoặc class)
-// const PI = 3.14;
-// module.exports = PI;
+// Cách 2: Gán trực tiếp cho module.exports (thường dùng khi muốn export một giá trị duy nhất)
+// module.exports = {
+//   add: (a, b) => a + b,
+//   subtract: (a, b) => a - b
+// };
