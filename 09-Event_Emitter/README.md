@@ -1,52 +1,183 @@
-9. Event Emitter trong Node.js
-A. Giới thiệu Event Emitter
-Event Emitter là gì?
+## 9. Event Emitter trong Node.js
 
-EventEmitter là một class được tích hợp sẵn trong Node.js, nằm trong module events. Nó là trung tâm của kiến trúc bất đồng bộ hướng sự kiện của Node.js. Rất nhiều đối tượng cốt lõi của Node.js (như http.Server, fs.ReadStream) đều kế thừa từ EventEmitter.
+### A. Giới thiệu Event Emitter
 
-Về cơ bản, EventEmitter cho phép bạn triển khai một mô hình thiết kế (design pattern) rất phổ biến gọi là Observer Pattern (hay Pub/Sub - Publish/Subscribe).
+Trong Node.js, **Event Emitter** là một trong những khái niệm cốt lõi, là nền tảng cho mô hình lập trình hướng sự kiện (event-driven programming). Nó cho phép các đối tượng "phát ra" (emit) các sự kiện và các đối tượng khác "lắng nghe" (listen) và "phản hồi" (respond) lại các sự kiện đó.
 
-Publisher (Người phát hành): Một đối tượng "phát" (emits) ra các sự kiện có tên khi có một điều gì đó thú vị xảy ra (ví dụ: một yêu cầu HTTP đến, một file đã được đọc xong). Đối tượng này chính là một EventEmitter.
-Subscriber (Người đăng ký) / Listener (Người lắng nghe): Một hoặc nhiều hàm (listeners) "lắng nghe" hoặc "đăng ký" để nhận thông báo khi một sự kiện cụ thể được phát ra.
-Mô hình này cho phép các thành phần khác nhau trong ứng dụng giao tiếp với nhau một cách lỏng lẻo (loosely coupled), mà không cần biết chi tiết về nhau.
+Hầu hết các module cốt lõi của Node.js (như `fs` cho hệ thống file, `http` cho server web, `stream` cho luồng dữ liệu) đều kế thừa từ hoặc sử dụng Event Emitter để thông báo về các sự kiện xảy ra.
+
+**Ý tưởng chính:**
+
+**Emitter (Người phát ra):** Một đối tượng có khả năng phát ra các sự kiện.
+
+**Listener (Người lắng nghe):** Một hàm (callback) được đăng ký để thực thi khi một sự kiện cụ thể được phát ra.
 
 Tại sao nó quan trọng?
 
-Nó giúp Node.js xử lý các tác vụ một cách hiệu quả. Thay vì một tiến trình phải chờ một tác vụ hoàn thành (blocking), nó có thể đăng ký một "listener" và tiếp tục làm việc khác. Khi tác vụ hoàn thành, một sự kiện được phát ra, và listener tương ứng sẽ được gọi để xử lý kết quả. Đây chính là trái tim của triết lý non-blocking của Node.js.
+### B. Cách sử dụng và các ứng dụng thực tế
 
-Cách sử dụng và các ứng dụng thực tế
-Để sử dụng EventEmitter, bạn cần import nó từ module events. 
+Để sử dụng Event Emitter, bạn cần import module `events` và tạo một instance của lớp `EventEmitter`.
 
-const EventEmitter = require('events');
+**Các phương thức chính:**
+
 Các phương thức chính:
 
-on(eventName, listener) hoặc addListener(eventName, listener): Đăng ký một hàm listener để lắng nghe sự kiện eventName. Bạn có thể đăng ký nhiều listener cho cùng một sự kiện.
-emit(eventName, [arg1], [arg2], ...): Phát ra sự kiện eventName. Tất cả các listener đã đăng ký cho sự kiện này sẽ được gọi theo thứ tự chúng được đăng ký. Bạn có thể truyền các đối số vào cho các hàm listener.
-once(eventName, listener): Tương tự như on, nhưng listener sẽ chỉ được gọi một lần duy nhất. Sau lần đầu tiên, nó sẽ tự động bị gỡ bỏ.
-removeListener(eventName, listener) hoặc off(eventName, listener): Gỡ bỏ một listener cụ thể khỏi một sự kiện.
-./custom_emitter.js
+- `emitter.on(eventName, listener)`: Đăng ký một hàm `listener` sẽ được gọi mỗi khi `eventName` được phát ra.
 
-B. Ứng dụng thực tế
+- `emitter.emit(eventName, [arg1], [arg2], ...)`: Phát ra `eventName`, gọi tất cả các `listener` đã đăng ký cho sự kiện đó theo thứ tự chúng được đăng ký. Các đối số bổ sung sẽ được truyền cho hàm `listener`.
 
-I. Xử lý sự kiện trong một HTTP Server
+- `emitter.once(eventName, listener)`: Đăng ký một `listener` chỉ được gọi **một lần duy nhất** khi `eventName` được phát ra, sau đó nó sẽ tự động bị hủy đăng ký.
 
-Đối tượng server được tạo bởi http.createServer() là một EventEmitter. Nó tự động phát ra các sự kiện như request khi có yêu cầu mới và close khi server đóng.
+- `emitter.off(eventName, listener)` / `emitter.removeListener(eventName, listener)`: Hủy đăng ký một `listener` cụ thể cho một `eventName`.
 
-./http_server_events.js
-Cách viết này tách biệt logic khởi tạo server và logic xử lý request, giúp code rõ ràng hơn.
+- `emitter.removeAllListeners([eventName])`: Hủy đăng ký tất cả `listener` cho một `eventName` cụ thể, hoặc tất cả `listener` cho tất cả các sự kiện nếu không có `eventName` nào được cung cấp.
 
-II. Xử lý Stream (Luồng dữ liệu)
+**Ví dụ cơ bản:**
 
-Stream là một trong những ứng dụng mạnh mẽ nhất của EventEmitter. Một stream đọc file (fs.ReadStream) sẽ phát ra các sự kiện:
+```
+// basic_event_emitter.js
+const EventEmitter = require('events');
 
-data: Khi một mẩu dữ liệu (chunk) được đọc từ file.
-end: Khi đã đọc hết file.
-error: Khi có lỗi xảy ra.
+// Tạo một instance của EventEmitter
+const myEmitter = new EventEmitter();
 
-./stream_events.js
-Cách này cực kỳ hiệu quả về bộ nhớ khi làm việc với các file lớn, vì nó xử lý dữ liệu theo từng phần thay vì tải toàn bộ file vào RAM.
+// 1. Đăng ký một listener cho sự kiện 'greet'
+myEmitter.on('greet', (name) => {
+    console.log(`Hello, ${name}!`);
+});
 
-III. Tạo các module tùy chỉnh có khả năng mở rộng
+// 2. Đăng ký một listener khác cho cùng sự kiện 'greet'
+myEmitter.on('greet', (name) => {
+    console.log(`Nice to meet you, ${name}.`);
+});
 
-Bạn có thể tạo ra các class của riêng mình kế thừa từ EventEmitter để xây dựng các hệ thống phức tạp, nơi các thành phần có thể tương tác với nhau mà không phụ thuộc cứng.
-./logger_class.js
+// 3. Đăng ký một listener chỉ chạy một lần cho sự kiện 'onceEvent'
+myEmitter.once('onceEvent', () => {
+    console.log('This will only run once!');
+});
+
+// Phát ra sự kiện 'greet'
+console.log('--- Emitting "greet" event ---');
+myEmitter.emit('greet', 'Alice'); // Cả hai listener của 'greet' sẽ chạy
+myEmitter.emit('greet', 'Bob');   // Cả hai listener của 'greet' sẽ chạy
+
+// Phát ra sự kiện 'onceEvent'
+console.log('\n--- Emitting "onceEvent" event ---');
+myEmitter.emit('onceEvent'); // Listener này sẽ chạy
+myEmitter.emit('onceEvent'); // Listener này sẽ không chạy nữa
+
+// Ví dụ về truyền nhiều đối số
+myEmitter.on('dataReceived', (id, data) => {
+    console.log(`\nData for ID ${id}: ${data}`);
+});
+myEmitter.emit('dataReceived', 101, { status: 'success', value: 123 });
+
+// Ví dụ về hủy đăng ký listener
+const specificListener = (msg) => {
+    console.log('Specific message:', msg);
+};
+myEmitter.on('customEvent', specificListener);
+myEmitter.emit('customEvent', 'First call');
+myEmitter.off('customEvent', specificListener); // Hủy đăng ký
+myEmitter.emit('customEvent', 'Second call'); // Listener sẽ không chạy
+```
+
+**Các ứng dụng thực tế:**
+
+1. **Xây dựng Web Server (Module `http`):**
+
+- Server HTTP trong Node.js là một Event Emitter.
+
+- Bạn lắng nghe sự kiện `request` để xử lý các yêu cầu đến từ client.
+
+```
+const http = require('http');
+  const server = http.createServer();
+
+  server.on('request', (req, res) => {
+      console.log(`Request received: ${req.method} ${req.url}`);
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('Hello World!\n');
+  });
+
+  server.listen(3000, () => {
+      console.log('Server running on port 3000');
+  });
+```
+
+2. **Đọc/Ghi File (Module fs - Streams):**
+
+- Các đối tượng Stream (như fs.createReadStream, fs.createWriteStream) là Event Emitter.
+
+- Bạn lắng nghe các sự kiện như data (khi có dữ liệu mới), end (khi luồng kết thúc), error (khi có lỗi).
+
+```
+const fs = require('fs');
+  const readableStream = fs.createReadStream('input.txt');
+  const writableStream = fs.createWriteStream('output.txt');
+
+  readableStream.on('data', (chunk) => {
+      console.log(`Received ${chunk.length} bytes of data.`);
+      writableStream.write(chunk); // Ghi dữ liệu vào file khác
+  });
+
+  readableStream.on('end', () => {
+      console.log('Finished reading file.');
+      writableStream.end();
+  });
+
+  readableStream.on('error', (err) => {
+      console.error('Error reading file:', err.message);
+  });
+
+  writableStream.on('finish', () => {
+      console.log('Finished writing file.');
+  });
+```
+
+3. **Xây dựng các hệ thống tùy chỉnh hướng sự kiện:**
+
+- Khi bạn có các thành phần trong ứng dụng cần giao tiếp với nhau mà không phụ thuộc trực tiếp vào nhau.
+
+- Ví dụ: Một module xử lý thanh toán có thể phát ra sự kiện `paymentSuccess` hoặc `paymentFailed`, và các module khác (quản lý đơn hàng, gửi email, cập nhật kho) sẽ lắng nghe các sự kiện này để thực hiện tác vụ của chúng.
+
+```
+// custom_event_system.js
+  const EventEmitter = require('events');
+
+  class PaymentProcessor extends EventEmitter {
+      processPayment(amount, userId) {
+          console.log(`Processing payment for user ${userId} with amount ${amount}...`);
+          // Giả lập quá trình xử lý thanh toán
+          setTimeout(() => {
+              const success = Math.random() > 0.3; // 70% thành công
+              if (success) {
+                  this.emit('paymentSuccess', userId, amount, Date.now());
+              } else {
+                  this.emit('paymentFailed', userId, amount, 'Insufficient funds');
+              }
+          }, 1500);
+      }
+  }
+
+  const processor = new PaymentProcessor();
+
+  // Module quản lý đơn hàng lắng nghe
+  processor.on('paymentSuccess', (userId, amount, timestamp) => {
+      console.log(`[Order Manager] User ${userId} payment of ${amount} successful at ${new Date(timestamp).toLocaleTimeString()}. Updating order status.`);
+  });
+
+  // Module gửi email lắng nghe
+  processor.on('paymentSuccess', (userId, amount) => {
+      console.log(`[Email Service] Sending confirmation email to user ${userId} for ${amount}.`);
+  });
+
+  processor.on('paymentFailed', (userId, amount, reason) => {
+      console.error(`[Error Handler] Payment for user ${userId} failed. Reason: ${reason}. Logging error.`);
+  });
+
+  // Kích hoạt quá trình thanh toán
+  processor.processPayment(100, 'user_123');
+  processor.processPayment(50, 'user_456');
+  processor.processPayment(200, 'user_789');
+```
