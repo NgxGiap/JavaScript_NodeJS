@@ -148,3 +148,87 @@ fs.readFile('data.txt', 'utf8', (err, data) => {
 
 console.log("...Kết thúc chương trình.");
 ```
+
+# Các thành phần chính của Node.js
+
+Node.js được xây dựng từ nhiều thành phần cốt lõi, mỗi thành phần đóng một vai trò quan trọng trong việc cung cấp môi trường thực thi JavaScript hiệu quả và không chặn (non-blocking):
+
+**1. V8 JavaScript Engine**
+
+- **Vai trò:** Đây là "trái tim" của Node.js. V8 là công cụ JavaScript mã nguồn mở hiệu suất cao được phát triển bởi Google, cũng là công cụ mà trình duyệt Chrome sử dụng.
+
+- **Hoạt động:** V8 chịu trách nhiệm biên dịch và thực thi mã JavaScript của bạn thành mã máy (machine code) trực tiếp. Điều này làm cho JavaScript trong Node.js chạy cực kỳ nhanh. Nó cũng quản lý Call Stack (nơi các hàm đang thực thi được lưu trữ) và Heap (bộ nhớ cho các biến và đối tượng).
+
+- **2. libuv**
+
+**Vai trò:** Đây là một thư viện C++ đa nền tảng, là xương sống cho khả năng I/O bất đồng bộ và Event Loop của Node.js. `libuv` cung cấp một lớp trừu tượng (abstraction layer) để Node.js có thể tương tác với hệ điều hành một cách không chặn trên nhiều nền tảng (Windows, macOS, Linux).
+
+- **Hoạt động:** `libuv` xử lý hầu hết các tác vụ bất đồng bộ nặng nhọc, bao gồm:
+
+  - **File System (FS) operations:** Đọc, ghi, xóa file (ví dụ: `fs.readFile()`).
+
+  - **Networking:** Xử lý kết nối TCP/UDP, HTTP requests (ví dụ: `http.createServer()`).
+
+  - **Timers:** Quản lý `setTimeout()` và `setInterval().`
+
+  - **Child Processes:** Cho phép Node.js chạy các lệnh hệ thống bên ngoài.
+
+  - **Thread Pool:** Đối với một số tác vụ I/O chặn hoặc các phép tính toán nặng mà hệ điều hành không hỗ trợ API không chặn (ví dụ: mã hóa/giải mã, nén dữ liệu), `libuv` sẽ ủy quyền chúng cho một nhóm các luồng riêng biệt (thread pool). Điều này đảm bảo luồng chính của JavaScript không bị chặn.
+
+**3. Event Loop**
+
+- **Vai trò:** Event Loop là cơ chế cốt lõi cho phép Node.js thực thi các tác vụ bất đồng bộ mà không làm chặn luồng chính. Nó là một vòng lặp liên tục kiểm tra và điều phối các tác vụ.
+
+- **Hoạt động:** Event Loop không ngừng kiểm tra xem Call Stack (nơi mã đồng bộ đang chạy) có rỗng không. Nếu rỗng, nó sẽ:
+
+  - Xử lý các callback trong **Microtask Queue** (từ Promises, process.nextTick()) với ưu tiên cao nhất.
+
+  - Sau đó, nó sẽ chuyển qua các giai đoạn khác nhau để xử lý các callback từ Macrotask Queue (hay Callback Queue/Task Queue), bao gồm các callback từ `setTimeout`, `setInterval`, I/O (từ `libuv`), và `setImmediate()`.
+
+  - Sự phân chia thành các giai đoạn và ưu tiên này giúp Node.js duy trì khả năng phản hồi và xử lý một lượng lớn các kết nối đồng thời một cách hiệu quả.
+
+**4. Node.js Core Modules (Built-in Modules)**
+
+- **Vai trò:** Đây là một tập hợp các module được tích hợp sẵn trong Node.js, cung cấp các API cấp cao để tương tác với các tính năng của hệ điều hành và thực hiện các tác vụ phổ biến. Chúng được viết bằng cả JavaScript và C++.
+
+- **Hoạt động:** Các module này được xây dựng dựa trên `libuv` và V8 để cung cấp giao diện dễ sử dụng cho lập trình viên. Ví dụ:
+
+  - http: Để xây dựng máy chủ web và thực hiện các yêu cầu `HTTP`.
+
+  - `fs` **(File System)**: Để tương tác với hệ thống file (đọc/ghi/xóa file).
+
+  - `path`: Để làm việc với đường dẫn file và thư mục.
+
+  - `events`: Cung cấp cơ chế Event Emitter để xây dựng các ứng dụng hướng sự kiện.
+
+  - `crypto`: Cung cấp các chức năng mã hóa và băm.
+
+**5. Node.js Bindings**
+
+- **Vai trò:** Đây là lớp trung gian cho phép mã JavaScript trong Node.js gọi các chức năng được viết bằng C++ (và các ngôn ngữ cấp thấp khác).
+
+- **Hoạt động:** Khi bạn sử dụng một module Node.js cấp cao như `fs` (ví dụ: `fs.readFile()`), thực chất có một phần của module đó được viết bằng C++ để giao tiếp trực tiếp với `libuv` và hệ điều hành. Các Node.js Bindings là cầu nối cho phép JavaScript gọi các chức năng C++ này một cách mượt mà.
+
+# Tóm tắt mối quan hệ giữa các thành phần
+
+Hãy hình dung một yêu cầu tới máy chủ Node.js của bạn:
+
+1. Một yêu cầu HTTP đến (do `libuv` lắng nghe).
+
+2. `libuv` nhận yêu cầu và đưa callback tương ứng vào hàng đợi.
+
+3. **Event Loop** thấy luồng chính rảnh, lấy callback (từ module `http` của **Core Modules**) và đẩy vào **Call Stack**.
+
+4. Mã JavaScript của bạn trong Call Stack có thể gọi `fs.readFile()` (từ module `fs` của Core Modules).
+
+5. `fs.readFile()` thông qua Node.js Bindings sẽ yêu cầu `libuv` thực hiện việc đọc file.
+
+6. `libuv` sẽ sử dụng **Thread Pool** (nếu việc đọc file là blocking I/O) hoặc các API không chặn của hệ điều hành để đọc file ở chế độ nền.
+
+7. Trong khi đó, **V8 Engine** tiếp tục thực thi các mã JavaScript khác nếu có trong Call Stack.
+
+8. Khi `libuv` hoàn thành việc đọc file, nó đưa callback của `fs.readFile()` vào Callback Queue (Macrotask Queue).
+
+9. **Event Loop** lại kiểm tra Call Stack, thấy nó rỗng, sau đó lấy callback của `fs.readFile()` từ Callback Queue và đẩy vào Call Stack để **V8** thực thi.
+
+Sự kết hợp ăn ý giữa V8 Engine để thực thi JavaScript, libuv để xử lý I/O bất đồng bộ, Event Loop để điều phối, và các Core Modules cùng Bindings để cung cấp API đã tạo nên một Node.js mạnh mẽ, hiệu quả và có khả năng mở rộng cao cho các ứng dụng phía máy chủ và ứng dụng thời gian thực.
