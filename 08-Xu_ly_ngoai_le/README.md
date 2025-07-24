@@ -60,7 +60,3 @@ File: `./promise_error_handling.js`
 
 File: `./async_await_error_handling.js`
 
-C. Xử lý lỗi với Async/Await (try...catch)
-
-Cách hoạt động: async/await cho phép chúng ta quay trở lại sử dụng cú pháp try...catch quen thuộc để xử lý lỗi trong code bất đồng bộ, làm cho nó trở nên cực kỳ trực quan.
-Cơ chế: Khi một Promise được await bị reject, nó sẽ hoạt động giống như một câu lệnh throw đồng bộ. Lỗi đó sẽ được bắt bởi khối catch bên ngoài.
